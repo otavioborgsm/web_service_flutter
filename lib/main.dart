@@ -6,7 +6,7 @@ void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: HomePage(),
-    theme: ThemeData(brightness: Brightness.dark, primarySwatch: Colors.amber),
+    theme: ThemeData(brightness: Brightness.dark, primarySwatch: Colors.lime),
     darkTheme: ThemeData(
       brightness: Brightness.dark,
     ),
