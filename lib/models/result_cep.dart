@@ -2,7 +2,6 @@
 //
 //     final welcome = welcomeFromMap(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 class ResultCep {
