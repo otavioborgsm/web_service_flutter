@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final welcome = welcomeFromMap(jsonString);
-
 import 'dart:convert';
 
 class ResultCep {
@@ -43,7 +39,7 @@ class ResultCep {
     ibge: json["ibge"],
     gia: json["gia"],
     ddd: json["ddd"],
-    siafi: json["siafi"],
+    siafi: json["siafi"]
   );
 
   Map<String, dynamic> toMap() => {

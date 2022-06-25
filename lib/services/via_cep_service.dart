@@ -7,7 +7,7 @@ class ViaCepService {
     final Uri uri = Uri.parse('https://viacep.com.br/ws/$cep/json/');
     final response = await dio.getUri(uri);
     if (response.statusCode == 200) {
-      return ResultCep.fromJson(response.toString());
+      return ResultCep.fromMap(response.data);
     } else {
       throw Exception('Requisição inválida!');
     }
