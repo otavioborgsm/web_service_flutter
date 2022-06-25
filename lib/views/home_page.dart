@@ -24,7 +24,17 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Consultar CEP'),
+        title: const Center(
+          child: Text(
+            'CONSULTA CEP',
+            style: TextStyle(
+              color: Color.fromARGB(255, 70, 70, 70),
+              fontWeight: FontWeight.w900,
+              fontSize: 24,
+              letterSpacing: 2
+            ),  
+          )
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
