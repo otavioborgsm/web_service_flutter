@@ -7,7 +7,11 @@ class ViaCepService {
     final Uri uri = Uri.parse('https://viacep.com.br/ws/$cep/json/');
     final response = await dio.getUri(uri);
     if (response.statusCode == 200) {
-      return ResultCep.fromMap(response.data);
+      if(response.data.toString()[1] == "e"){
+        throw Exception('CEP informado não consta no banco de dados!');
+      }else{
+        return ResultCep.fromMap(response.data);
+      }
     } else {
       throw Exception('Requisição inválida!');
     }
