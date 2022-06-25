@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> {
       keyboardType: TextInputType.number,
       textInputAction: TextInputAction.done,
       decoration: const InputDecoration(labelText: 'Cep'),
+      style: const TextStyle(fontSize: 22, color: Colors.black),
       controller: _searchCepController,
       enabled: _enableField,
     );
