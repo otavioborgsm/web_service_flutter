@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:web_service/services/via_cep_service.dart';
 
@@ -93,15 +94,28 @@ class _HomePageState extends State<HomePage> {
 
     final cep = _searchCepController.text;
 
-    final resultCep = await ViaCepService.fetchCep(cep: cep);
-    //print(resultCep.localidade); // Exibindo somente a localidade no terminal
+    try{
+      final resultCep = await ViaCepService.fetchCep(cep: cep);
 
-    setState(() {
-      _result = resultCep.toJson();
-    });
+      setState(() {
+        _result = resultCep.toJson();
+      });
 
-    _searching(false);
+      _searching(false);
+    }catch(e){
+      setState(() {
+        _buildFlushbar(e.toString());
+        _result = e.toString();
+      });
+      _searching(false);
+    }
   }
+
+  Future<Widget> _buildFlushbar(mensagem) async => Flushbar(
+      title: "Erro",
+      message: mensagem,
+      duration: const Duration(seconds: 2)
+    );
 
   Widget _buildResultForm() {
     return Container(
