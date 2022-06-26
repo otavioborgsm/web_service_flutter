@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:web_service/services/via_cep_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,8 +13,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _searchCepController = TextEditingController();
   bool _loading = false;
+  bool _isCepValid = false;
   bool _enableField = true;
   String? _result;
+  String _shareResult = '';
+
+
   @override
   void dispose() {
     super.dispose();
@@ -24,17 +29,26 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'CONSULTA CEP',
-            style: TextStyle(
-              color: Color.fromARGB(255, 70, 70, 70),
-              fontWeight: FontWeight.w900,
-              fontSize: 24,
-              letterSpacing: 2
-            ),  
-          )
+        title:const Text(
+          'CONSULTA CEP',
+          style: TextStyle(
+            color: Color.fromARGB(255, 70, 70, 70),
+            fontWeight: FontWeight.w900,
+            fontSize: 24,
+            letterSpacing: 2
+          ),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.share,
+              color: Color.fromARGB(255, 70, 70, 70),
+            ),
+            onPressed: () {
+              _onShare();
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -91,7 +105,6 @@ class _HomePageState extends State<HomePage> {
 
   Future _searchCep() async {
     _searching(true);
-
     final cep = _searchCepController.text;
 
     try{
@@ -100,10 +113,14 @@ class _HomePageState extends State<HomePage> {
 
         setState(() {
           _result = resultCep.toJson();
+          _isCepValid = true;
         });
-
+        
         _searching(false);
       }else{
+        _isCepValid = false;
+        _searching(false);
+
         await Flushbar(
           icon: const Icon(
             Icons.error_outline,
@@ -114,29 +131,52 @@ class _HomePageState extends State<HomePage> {
           messageSize: 20,
           duration: const Duration(seconds: 3),
         ).show(context);
-        _searching(false);
       }
     }catch(e){
-        await Flushbar(
-          icon: const Icon(
-            Icons.error,
-            color: Colors.white,
-            size: 30
-          ),
-          message: e.toString(),
-          messageSize: 20,
-          duration: const Duration(seconds: 3),
-        ).show(context);
-        _searching(false);
-      }
+      _isCepValid = false;
+      _searching(false);
+
+      await Flushbar(
+        icon: const Icon(
+          Icons.error,
+          color: Colors.white,
+          size: 30
+        ),
+        message: e.toString(),
+        messageSize: 20,
+        duration: const Duration(seconds: 3),
+      ).show(context);
+    }
   }
 
   Widget _buildResultForm() {
       return Container(
         padding: const EdgeInsets.only(top: 20.0),
-        child: Text(_result ?? ''),
+        child: Text(
+          _result ?? '',
+          style: const TextStyle(
+            fontSize: 20
+          ),
+        ),
       );
   }
 
-
+  void _onShare() async {
+    if (_isCepValid) {
+      _shareResult = _result!;
+      await Share.share(_shareResult);
+    } else {
+      await Flushbar(
+        icon: const Icon(
+            Icons.error_outline,
+            color: Colors.white,
+            size: 30
+          ),
+        title: 'Erro ao compartilhar',
+        message: 'Consulte um CEP antes de compartilhar',
+        messageSize: 20,
+        duration: const Duration(seconds: 3),
+      ).show(context);
+    }
+  }
 }
