@@ -14,16 +14,6 @@ class _HomePageState extends State<HomePage> {
   bool _loading = false;
   bool _enableField = true;
   String? _result;
-  String? logradouro = "logradouro";
-  String? _complemento;
-  String? _bairro;
-  String? localidade = "localidade";
-  String? _uf;
-  String? _ibge;
-  String? _gia;
-  String? _ddd;
-  String? _siafi;
-
   @override
   void dispose() {
     super.dispose();
@@ -105,34 +95,47 @@ class _HomePageState extends State<HomePage> {
     final cep = _searchCepController.text;
 
     try{
-      final resultCep = await ViaCepService.fetchCep(cep: cep);
+      if (cep.length == 8) {
+        final resultCep = await ViaCepService.fetchCep(cep: cep);
 
-      setState(() {
-        _result = resultCep.toJson();
-      });
+        setState(() {
+          _result = resultCep.toJson();
+        });
 
-      _searching(false);
+        _searching(false);
+      }else{
+        await Flushbar(
+          icon: const Icon(
+            Icons.error_outline,
+            color: Colors.white,
+            size: 30
+          ),
+          message: 'O CEP deve conter 8 digitos.',
+          messageSize: 20,
+          duration: const Duration(seconds: 3),
+        ).show(context);
+        _searching(false);
+      }
     }catch(e){
-      setState(() {
-        _result = e.toString();
-      });
-      await Flushbar(
-        title: 'Mongol',
-        message: e.toString(),
-        duration: const Duration(seconds: 5),
-      ).show(context);
-      _searching(false);
-    }
+        await Flushbar(
+          icon: const Icon(
+            Icons.error,
+            color: Colors.white,
+            size: 30
+          ),
+          message: e.toString(),
+          messageSize: 20,
+          duration: const Duration(seconds: 3),
+        ).show(context);
+        _searching(false);
+      }
   }
 
   Widget _buildResultForm() {
-    
       return Container(
         padding: const EdgeInsets.only(top: 20.0),
         child: Text(_result ?? ''),
       );
-    
-    
   }
 
 
