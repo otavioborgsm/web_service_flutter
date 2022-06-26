@@ -14,6 +14,15 @@ class _HomePageState extends State<HomePage> {
   bool _loading = false;
   bool _enableField = true;
   String? _result;
+  String? logradouro = "logradouro";
+  String? _complemento;
+  String? _bairro;
+  String? localidade = "localidade";
+  String? _uf;
+  String? _ibge;
+  String? _gia;
+  String? _ddd;
+  String? _siafi;
 
   @override
   void dispose() {
@@ -105,23 +114,26 @@ class _HomePageState extends State<HomePage> {
       _searching(false);
     }catch(e){
       setState(() {
-        _buildFlushbar(e.toString());
         _result = e.toString();
       });
+      await Flushbar(
+        title: 'Mongol',
+        message: e.toString(),
+        duration: const Duration(seconds: 5),
+      ).show(context);
       _searching(false);
     }
   }
 
-  Future<Widget> _buildFlushbar(mensagem) async => Flushbar(
-      title: "Erro",
-      message: mensagem,
-      duration: const Duration(seconds: 2)
-    );
-
   Widget _buildResultForm() {
-    return Container(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: Text(_result ?? ''),
-    );
+    
+      return Container(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Text(_result ?? ''),
+      );
+    
+    
   }
+
+
 }
