@@ -81,7 +81,15 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.only(top: 20.0),
       child:  ElevatedButton(
         onPressed: _searchCep,
-        child: _loading ? _circularLoading() : const Text('Consultar'),
+        child: _loading ? _circularLoading() : 
+          const Text(
+            'CONSULTAR',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color.fromARGB(255, 70, 70, 70)
+            ),
+            ),
       ),
     );
   }
