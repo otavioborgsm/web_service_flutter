@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:web_service/models/result_cep.dart';
 import 'package:web_service/services/via_cep_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -81,7 +82,15 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.only(top: 20.0),
       child:  ElevatedButton(
         onPressed: _searchCep,
-        child: _loading ? _circularLoading() : const Text('Consultar'),
+        child: _loading ? _circularLoading() : 
+          const Text(
+            'CONSULTAR',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color.fromARGB(255, 70, 70, 70)
+            ),
+            ),
       ),
     );
   }
@@ -109,17 +118,22 @@ class _HomePageState extends State<HomePage> {
 
     try{
       if (cep.length == 8) {
+        _isCepValid = false;
         final resultCep = await ViaCepService.fetchCep(cep: cep);
-
         setState(() {
-          _result = resultCep.toJson();
           _isCepValid = true;
+          _result = resultCep.toJson();
+          _buildResultForm();
         });
         
         _searching(false);
       }else{
-        _isCepValid = false;
         _searching(false);
+
+        setState(() {
+          _isCepValid = false;
+          _buildResultForm();
+        });
 
         await Flushbar(
           icon: const Icon(
@@ -133,8 +147,12 @@ class _HomePageState extends State<HomePage> {
         ).show(context);
       }
     }catch(e){
-      _isCepValid = false;
       _searching(false);
+
+      setState(() {
+        _isCepValid = false;
+        _buildResultForm();
+      });
 
       await Flushbar(
         icon: const Icon(
@@ -150,6 +168,79 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildResultForm() {
+    // print(result);
+    var resultado = _result ?? " ";
+    if(_isCepValid == true){
+      var resultJson = ResultCep.fromJson(resultado);    
+      return Container(
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Column(
+          children: [
+            Text(
+              "CEP: " + resultJson.cep,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            Text(
+              "Logradouro: " + resultJson.logradouro,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "Complemento: " + resultJson.complemento,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "Bairro: " + resultJson.bairro,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "Localidade: " + resultJson.localidade,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "UF: " + resultJson.uf,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "IBGE: " + resultJson.ibge,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "GIA: " + resultJson.gia,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "DDD: " + resultJson.ddd,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+            Text(
+              "Siafi: " + resultJson.siafi,
+              style: const TextStyle(
+                fontSize: 20
+              ),
+            ),
+          ],
+        ),
+      );
+    }else{
       return Container(
         padding: const EdgeInsets.only(top: 20.0),
         child: Text(
@@ -159,6 +250,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       );
+    }
+    
   }
 
   void _onShare() async {
